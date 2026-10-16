@@ -362,16 +362,6 @@ body.modal-open { overflow: hidden; }
   box-shadow: 0 0 0 3px rgba(100, 103, 242, 0.12);
 }
 
-/* ---------- 条形图 ---------- */
-
-.bars { display: flex; flex-direction: column; gap: 9px; }
-.bar-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) 40px; align-items: center; gap: 8px; font-size: 0.8125rem; }
-.bar-label { color: var(--foreground); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bar-track { background: var(--secondary); border-radius: 5px; height: 10px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 5px; background: var(--primary); }
-.bar-fill.role { background: #a5a7f7; }
-.bar-value { text-align: right; color: var(--foreground); font-variant-numeric: tabular-nums; }
-
 /* ---------- 页脚 ---------- */
 
 .site-footer { color: var(--muted-foreground); font-size: 12px; text-align: center; padding: 28px 0 40px; }
@@ -385,7 +375,6 @@ body.modal-open { overflow: hidden; }
   .site-header h1 { font-size: 32px; }
   .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .two-col { grid-template-columns: minmax(0, 1fr); }
-  .bar-row { grid-template-columns: 64px minmax(0, 1fr) 34px; }
 }
 
 @media (max-width: 600px) {

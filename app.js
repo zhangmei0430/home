@@ -51,6 +51,9 @@ const STATUS_CLASS = {
   '待启动': 'st-pending',
   '进行中': 'st-doing',
   '已完成': 'st-pass',
+  '履行中': 'st-pass',
+  '即将到期': 'st-pending',
+  '已到期': 'st-reject',
 };
 
 /* ================= 示例数据 =================
@@ -98,26 +101,20 @@ const SAMPLE = {
     { name: '突发事件应急预案', no: '综合管理〔2024〕3 号', dept: '综合办公室', date: '2024-05-01', status: '已废止' },
     { name: '固定资产管理制度', no: '财务管理〔2023〕10 号', dept: '财务部', date: '2023-12-01', status: '现行有效' },
   ],
-  staff: {
-    total: 128,
-    joined: 6,
-    left: 3,
-    avgYears: '4.6 年',
-    depts: [
-      { name: '业务一部', count: 32 },
-      { name: '业务二部', count: 28 },
-      { name: '客户服务部', count: 16 },
-      { name: '风控合规部', count: 16 },
-      { name: '综合办公室', count: 14 },
-      { name: '财务部', count: 12 },
-      { name: '信息技术部', count: 10 },
-    ],
-    roles: [
-      { name: '管理岗', count: 18 },
-      { name: '专业岗', count: 82 },
-      { name: '支持岗', count: 28 },
-    ],
-  },
+  contracts: [
+    { name: '王芳', dept: '业务一部', type: '固定期限', start: '2023-11-01', end: '2026-10-31', status: '即将到期' },
+    { name: '李强', dept: '业务二部', type: '固定期限', start: '2024-03-15', end: '2027-03-14', status: '履行中' },
+    { name: '张敏', dept: '客户服务部', type: '固定期限', start: '2021-08-01', end: '2026-07-31', status: '已到期' },
+    { name: '刘洋', dept: '风控合规部', type: '无固定期限', start: '2019-06-01', end: '—', status: '履行中' },
+    { name: '陈静', dept: '综合办公室', type: '固定期限', start: '2025-01-01', end: '2028-01-01', status: '履行中' },
+    { name: '赵磊', dept: '信息技术部', type: '固定期限', start: '2024-09-01', end: '2027-08-31', status: '履行中' },
+    { name: '孙丽', dept: '财务部', type: '固定期限', start: '2023-12-01', end: '2026-11-30', status: '即将到期' },
+    { name: '周涛', dept: '业务一部', type: '固定期限', start: '2023-06-15', end: '2026-06-14', status: '已到期' },
+    { name: '吴婷', dept: '业务二部', type: '固定期限', start: '2024-03-01', end: '2027-02-28', status: '履行中' },
+    { name: '郑凯', dept: '客户服务部', type: '固定期限', start: '2025-07-01', end: '2028-06-30', status: '履行中' },
+    { name: '冯雪', dept: '风控合规部', type: '固定期限', start: '2022-10-01', end: '2026-12-31', status: '即将到期' },
+    { name: '许峰', dept: '综合办公室', type: '无固定期限', start: '2020-04-01', end: '—', status: '履行中' },
+  ],
   reports: [
     { name: '月度经营分析报告', type: '月报', period: '2026-09', generated: '2026-10-10 09:30', status: '已生成', format: 'PDF' },
     { name: '月度风险排查报告', type: '月报', period: '2026-09', generated: '2026-10-09 16:00', status: '已生成', format: 'PDF' },
@@ -138,7 +135,7 @@ const TABS = [
   { id: 'news', label: '📰 行业新闻' },
   { id: 'risk', label: '🛡️ 风险审核' },
   { id: 'policies', label: '📚 制度查询' },
-  { id: 'staff', label: '👥 人员统计' },
+  { id: 'contracts', label: '✍️ 劳动合同' },
   { id: 'reports', label: '📄 文稿报表' },
 ];
 
@@ -167,7 +164,7 @@ function showTab(id) {
   if (id === 'records') renderRecords();
   if (id === 'risk') renderRisk();
   if (id === 'policies') renderPolicies();
-  if (id === 'staff') renderStaff();
+  if (id === 'contracts') renderContracts();
   if (id === 'reports') renderReports();
 }
 
@@ -205,30 +202,17 @@ function fillTable(table, headers, rows) {
   table.appendChild(tbody);
 }
 
-function fillBars(container, items, kind) {
-  container.textContent = '';
-  const max = Math.max(...items.map((i) => i.count));
-  for (const it of items) {
-    const row = el('div', 'bar-row');
-    const track = el('div', 'bar-track');
-    const fill = el('div', 'bar-fill ' + kind);
-    fill.style.width = ((it.count / max) * 100).toFixed(1) + '%';
-    track.appendChild(fill);
-    row.append(el('span', 'bar-label', it.name), track, el('span', 'bar-value', String(it.count)));
-    container.appendChild(row);
-  }
-}
-
 /* ================= 工作总览 ================= */
 
 function renderOverview() {
   const pending = SAMPLE.risks.filter((r) => r.status === '待审核').length;
   const policies = SAMPLE.policies.filter((p) => p.status !== '已废止').length;
+  const expiring = SAMPLE.contracts.filter((c) => c.status === '即将到期').length;
   fillStats($('ov-stats'), [
     { label: '最新快讯', value: allItems.length ? allItems.length + ' 条' : '—', sub: newsUpdatedText || '加载中…' },
     { label: '待审核风险', value: pending + ' 项', sub: '示例数据' },
     { label: '制度文件', value: policies + ' 份', sub: '不含已废止 · 示例数据' },
-    { label: '在岗人员', value: SAMPLE.staff.total + ' 人', sub: '示例数据' },
+    { label: '劳动合同', value: SAMPLE.contracts.length + ' 份', sub: expiring + ' 份即将到期 · 示例数据' },
   ]);
 
   const newsUl = $('ov-news');
@@ -386,18 +370,28 @@ function renderPolicies() {
   );
 }
 
-/* ================= 人员统计 ================= */
+/* ================= 劳动合同 ================= */
 
-function renderStaff() {
-  const s = SAMPLE.staff;
-  fillStats($('staff-stats'), [
-    { label: '在岗人员', value: s.total + ' 人' },
-    { label: '本季新进', value: s.joined + ' 人' },
-    { label: '本季离职', value: s.left + ' 人' },
-    { label: '平均司龄', value: s.avgYears },
+function renderContracts() {
+  const list = SAMPLE.contracts;
+  const count = (s) => list.filter((c) => c.status === s).length;
+  fillStats($('contract-stats'), [
+    { label: '合同总数', value: list.length + ' 份' },
+    { label: '履行中', value: count('履行中') + ' 份', sub: '示例数据' },
+    { label: '即将到期', value: count('即将到期') + ' 份', sub: '90 天内需续签 · 示例数据' },
+    { label: '已到期', value: count('已到期') + ' 份', sub: '示例数据' },
   ]);
-  fillBars($('staff-depts'), s.depts, 'dept');
-  fillBars($('staff-roles'), s.roles, 'role');
+  fillTable(
+    $('contract-table'),
+    ['姓名', '部门', '合同类型', '合同期限', '状态'],
+    list.map((c) => [
+      c.name,
+      c.dept,
+      c.type,
+      c.end === '—' ? c.start + ' 起' : c.start + ' ~ ' + c.end,
+      badge(c.status, STATUS_CLASS[c.status]),
+    ])
+  );
 }
 
 /* ================= 文稿报表 ================= */
