@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>财经快讯</title>
+<title>工作台</title>
 <link rel="icon" href="data:," />
 <link rel="stylesheet" href="styles.css" />
 </head>
@@ -11,20 +11,77 @@
 <header class="site-header">
   <div class="wrap">
     <div class="title-row">
-      <h1>财经快讯</h1>
-      <span id="updated" class="updated">加载中…</span>
-      <button id="refresh" class="refresh-btn" type="button">刷新</button>
+      <h1>工作台</h1>
+      <span class="brand-sub">新闻 · 风险 · 制度 · 人员 · 报表</span>
     </div>
-    <nav id="filters" class="filters"></nav>
+    <nav id="tabs" class="tabs"></nav>
   </div>
 </header>
 <main class="wrap">
-  <ul id="news-list" class="news-list"></ul>
-  <div id="empty" class="empty" hidden>暂无新闻，等待下一次更新</div>
+
+  <section class="view" id="view-overview" hidden>
+    <div class="stat-grid" id="ov-stats"></div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><h2>最新快讯</h2><span class="panel-note">财经/股市</span></div>
+        <ul class="mini-list" id="ov-news"></ul>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>今日待办</h2><span class="demo-tag">示例数据</span></div>
+        <ul class="todo-list" id="ov-todos"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-news" hidden>
+    <div class="subhead">
+      <h2>行业新闻</h2>
+      <span class="panel-note">点击标题跳转原文</span>
+      <span id="updated" class="updated"></span>
+      <button id="refresh" class="refresh-btn" type="button">刷新</button>
+    </div>
+    <nav id="filters" class="filters"></nav>
+    <ul id="news-list" class="news-list"></ul>
+    <div id="empty" class="empty" hidden>暂无新闻，等待下一次更新</div>
+  </section>
+
+  <section class="view" id="view-risk" hidden>
+    <div class="subhead"><h2>风险审核</h2><span class="demo-tag">示例数据，可替换为真实记录</span></div>
+    <nav id="risk-filters" class="filters"></nav>
+    <div class="table-wrap"><table id="risk-table" class="table"></table></div>
+  </section>
+
+  <section class="view" id="view-policies" hidden>
+    <div class="subhead"><h2>制度查询</h2><span class="demo-tag">示例数据，可替换为真实制度</span></div>
+    <input id="policy-search" class="search-input" type="search" placeholder="输入制度名称、文号或发布部门搜索…" />
+    <div class="table-wrap"><table id="policy-table" class="table"></table></div>
+    <div id="policy-empty" class="empty" hidden>没有找到匹配的制度</div>
+  </section>
+
+  <section class="view" id="view-staff" hidden>
+    <div class="subhead"><h2>人员统计</h2><span class="demo-tag">示例数据，可替换为真实数据</span></div>
+    <div class="stat-grid" id="staff-stats"></div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><h2>部门人数分布</h2></div>
+        <div class="bars" id="staff-depts"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>岗位类别</h2></div>
+        <div class="bars" id="staff-roles"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-reports" hidden>
+    <div class="subhead"><h2>文稿报表</h2><span class="demo-tag">示例数据，可替换为真实报表</span></div>
+    <div class="table-wrap"><table id="report-table" class="table"></table></div>
+  </section>
+
 </main>
 <footer class="site-footer wrap">
-  <p>数据来源：华尔街见闻 · 东方财富 · 金十数据｜点击标题跳转原文</p>
-  <p>页面由定时任务自动更新</p>
+  <p>行业新闻来源：华尔街见闻 · 东方财富 · 金十数据</p>
+  <p>风险审核 / 制度查询 / 人员统计 / 文稿报表 当前为示例数据</p>
 </footer>
 <script src="app.js"></script>
 </body>
