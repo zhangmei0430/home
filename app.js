@@ -48,6 +48,9 @@ const STATUS_CLASS = {
   '已生成': 'st-pass',
   '生成中': 'st-doing',
   '待生成': 'st-todo',
+  '待启动': 'st-pending',
+  '进行中': 'st-doing',
+  '已完成': 'st-pass',
 };
 
 /* ================= 示例数据 =================
@@ -60,6 +63,17 @@ const SAMPLE = {
     { text: '汇总 10 月人员变动情况', level: '中', state: '进行中' },
     { text: '归档 9 月经营分析报告', level: '普通', state: '已完成' },
     { text: '完成新制度征求意见反馈', level: '普通', state: '未开始' },
+  ],
+  records: [
+    { date: '2026-10-16', title: '四季度工作部署会组织与纪要整理', category: '会议接待', icon: '📅', status: '已完成', owner: '本人', desc: '完成会议通知、材料准备、会场协调及纪要起草，会后事项已分解到人。', detail: '拟定会议议程并通知参会人员 23 人；准备汇报材料汇编 1 份；协调会场及设备调试；会后 2 小时内完成会议纪要初稿；将 8 项决议事项分解为台账并明确责任人。' },
+    { date: '2026-10-14', title: '9 月月度经营分析报告编制', category: '报表编制', icon: '📊', status: '已完成', owner: '本人', desc: '完成数据汇总、图表制作与初稿审校，已提交分管领导审阅。', detail: '汇总业务、财务数据 5 大类；制作图表 12 张；完成初稿全文 18 页并两轮校对；已提交分管领导审阅，待反馈修改意见后定稿。' },
+    { date: '2026-10-13', title: '年度工作总结文稿起草', category: '文稿起草', icon: '📝', status: '进行中', owner: '本人', desc: '完成提纲与第一部分初稿，正在补充数据案例。', detail: '已确定四段式提纲；完成第一部分“年度工作回顾”初稿约 2600 字；正在收集业务数据与典型案例，预计本周完成全文初稿。' },
+    { date: '2026-10-12', title: '办公区消防设施整改跟进', category: '督办事项', icon: '📌', status: '进行中', owner: '本人', desc: '已对接维保单位，整改方案确定中，预计下周进场施工。', detail: '会同安全管理员完成现场排查，发现 3 类问题；已与维保单位完成两轮沟通；整改方案和报价正在确认中，预计下周一进场施工，工期约 3 天。' },
+    { date: '2026-10-10', title: '与兄弟单位业务对接会', category: '协调联络', icon: '🤝', status: '已完成', owner: '本人', desc: '就联合项目推进事项进行沟通，形成合作备忘要点 6 条。', detail: '双方就联合项目分工、进度节点、数据共享方式达成一致；形成备忘要点 6 条并邮件确认；明确下周各自提交细化方案。' },
+    { date: '2026-10-09', title: '新员工入职引导安排', category: '人事协助', icon: '👥', status: '已完成', owner: '本人', desc: '完成入职材料准备、工位与设备安排、引导人指定。', detail: '准备入职材料包 2 套；协调办公位与电脑设备；指定引导人并明确首周安排；已组织简短的部门见面会。' },
+    { date: '2026-10-08', title: '印章使用台账月度核对', category: '台账管理', icon: '🧾', status: '已完成', owner: '本人', desc: '核对 9 月用印记录 87 条，与系统记录一致。', detail: '逐条核对 9 月用印审批记录 87 条，与系统流程数据一致；补充扫描件 5 份归档；未发现异常用印情况。' },
+    { date: '2026-10-03', title: '年度设备采购计划汇总', category: '报表编制', icon: '🖥️', status: '待启动', owner: '本人', desc: '待各部门上报需求后汇总，截止日期 10 月 25 日。', detail: '已发出需求征集通知至各部门；待汇总后进行预算比对；计划于 10 月 25 日前完成汇总表并提交审批。' },
+    { date: '2026-09-30', title: '档案室资料归档整理', category: '档案管理', icon: '🗂️', status: '已完成', owner: '本人', desc: '完成三季度合同、发文类档案归档，共 132 件。', detail: '完成三季度合同类档案 76 件、发文类档案 56 件归档；更新档案电子目录；库房环境检查正常。' },
   ],
   risks: [
     { id: 'FX-2026-018', item: '客户 A 账户单笔转账金额超出日常均值 8 倍', level: '高', owner: '王强', time: '2026-10-16 09:42', status: '待审核' },
@@ -119,12 +133,13 @@ const SAMPLE = {
 /* ================= Tab 路由 ================= */
 
 const TABS = [
-  { id: 'overview', label: '工作总览' },
-  { id: 'news', label: '行业新闻' },
-  { id: 'risk', label: '风险审核' },
-  { id: 'policies', label: '制度查询' },
-  { id: 'staff', label: '人员统计' },
-  { id: 'reports', label: '文稿报表' },
+  { id: 'overview', label: '📊 工作总览' },
+  { id: 'records', label: '📝 工作记录' },
+  { id: 'news', label: '📰 行业新闻' },
+  { id: 'risk', label: '🛡️ 风险审核' },
+  { id: 'policies', label: '📚 制度查询' },
+  { id: 'staff', label: '👥 人员统计' },
+  { id: 'reports', label: '📄 文稿报表' },
 ];
 
 const tabsEl = $('tabs');
@@ -149,6 +164,7 @@ function showTab(id) {
     tabsEl.querySelector(`[data-tab="${t.id}"]`).classList.toggle('active', t.id === id);
   }
   if (id === 'overview') renderOverview();
+  if (id === 'records') renderRecords();
   if (id === 'risk') renderRisk();
   if (id === 'policies') renderPolicies();
   if (id === 'staff') renderStaff();
@@ -394,12 +410,77 @@ function renderReports() {
   );
 }
 
+/* ================= 工作记录 ================= */
+
+function renderRecords() {
+  const grid = $('records-grid');
+  grid.textContent = '';
+  for (const r of SAMPLE.records) {
+    const card = el('div', 'rec-card');
+    card.appendChild(el('div', 'rec-ph', r.icon));
+
+    const body = el('div', 'rec-body');
+    body.appendChild(el('div', 'rec-title', r.title));
+    body.appendChild(el('div', 'rec-desc', r.desc));
+
+    const meta = el('div', 'rec-meta');
+    const left = el('span', 'tl');
+    left.append(el('span', null, r.date), el('span', null, '·'), el('span', null, r.category));
+    meta.append(left, badge(r.status, STATUS_CLASS[r.status]));
+    body.appendChild(meta);
+
+    card.appendChild(body);
+    card.addEventListener('click', () => openRecord(r));
+    grid.appendChild(card);
+  }
+}
+
+function modalField(label, value) {
+  const f = el('div', 'field');
+  f.appendChild(el('div', 'label', label));
+  const v = el('div', 'value');
+  if (value instanceof Node) v.appendChild(value);
+  else v.textContent = value;
+  f.appendChild(v);
+  return f;
+}
+
+function openRecord(r) {
+  $('modal-title').textContent = r.title;
+  const fields = $('modal-fields');
+  fields.textContent = '';
+
+  const group = el('div', 'field-group');
+  group.append(
+    modalField('日期', r.date),
+    modalField('类别', r.category),
+    modalField('状态', badge(r.status, STATUS_CLASS[r.status])),
+    modalField('记录人', r.owner)
+  );
+  fields.append(group, modalField('工作详情', r.detail));
+
+  $('record-modal').classList.add('show');
+  document.body.classList.add('modal-open');
+}
+
+function closeRecord() {
+  $('record-modal').classList.remove('show');
+  document.body.classList.remove('modal-open');
+}
+
 /* ================= 初始化 ================= */
 
 buildTabs();
 $('policy-search').addEventListener('input', renderPolicies);
 $('refresh').addEventListener('click', load);
 window.addEventListener('hashchange', () => showTab(currentTabId()));
+$('modal-close').addEventListener('click', closeRecord);
+$('record-modal').addEventListener('click', (e) => {
+  if (e.target === $('record-modal')) closeRecord();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeRecord();
+});
 
 showTab(currentTabId());
 load();
