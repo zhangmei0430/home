@@ -1,9 +1,9 @@
 name: 更新财经快讯
 
 on:
-  schedule:
-    # GitHub 使用 UTC 时间；0 */2 * * * 即北京时间 8:00、10:00、12:00 … 每 2 小时一次
-    - cron: '0 */2 * * *'
+  # 定时更新已暂停（2026-10-16）。恢复自动更新：取消下面 schedule 两行的注释即可。
+  # schedule:
+  #   - cron: '0 */2 * * *'   # GitHub 用 UTC 时间；北京时间每 2 小时一次（8:00、10:00、12:00 …）
   workflow_dispatch:
 
 permissions:
