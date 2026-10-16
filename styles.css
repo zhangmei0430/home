@@ -31,7 +31,6 @@ body {
 
 .site-header { text-align: center; padding: 48px 24px 14px; }
 .site-header h1 { font-size: 44px; font-weight: 800; letter-spacing: 2px; margin: 0; }
-.brand-sub { font-size: 0.875rem; color: var(--muted-foreground); margin-top: 8px; }
 
 /* ---------- Tabs ---------- */
 
